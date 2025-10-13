@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: shopnow-backend
+  name: backend
   namespace: argocd
   annotations:
     argocd.argoproj.io/sync-wave: "2"
@@ -13,6 +13,7 @@ spec:
     path: kubernetes/helm/charts/backend
     helm:
       valueFiles: []
+      releaseName: backend
   destination:
     server: 'https://kubernetes.default.svc'
     namespace: shopnow-demo

@@ -239,6 +239,9 @@ helm upgrade --install admin kubernetes/helm/charts/admin -n shopnow-demo
 kubectl create namespace argocd
 kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
 
+# Create target namespace
+kubectl create namespace shopnow-demo
+
 # Deploy applications
 kubectl apply -f kubernetes/argocd/umbrella-application.yaml
 
