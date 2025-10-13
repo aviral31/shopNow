@@ -34,10 +34,10 @@ helm version
 ### Deploy Individual Charts
 ```bash
 # Deploy in dependency order
-helm upgrade --install --install mongo charts/mongo -n shopnow-demo --create-namespace
-helm upgrade --install --install backend charts/backend -n shopnow-demo
-helm upgrade --install --install frontend charts/frontend -n shopnow-demo
-helm upgrade --install --install admin charts/admin -n shopnow-demo
+helm upgrade --install mongo kubernetes/helm/charts/mongo -n shopnow-demo --create-namespace
+helm upgrade --install backend kubernetes/helm/charts/backend -n shopnow-demo
+helm upgrade --install frontend kubernetes/helm/charts/frontend -n shopnow-demo
+helm upgrade --install admin kubernetes/helm/charts/admin -n shopnow-demo
 ```
 
 ### Deploy with Custom Values

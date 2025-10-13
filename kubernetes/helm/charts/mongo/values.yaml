@@ -35,17 +35,3 @@ persistentVolumeClaimRetentionPolicy:
   whenScaled: Delete
 
 terminationGracePeriodSeconds: 30
-
-# StorageClass configuration
-storageClass:
-  create: true
-  name: gp3-ssd
-  provisioner: ebs.csi.aws.com
-  volumeBindingMode: WaitForFirstConsumer
-  reclaimPolicy: Delete
-  allowVolumeExpansion: true
-  parameters:
-    type: gp3
-    fsType: ext4
-  labels: {}
-  annotations: {}

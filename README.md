@@ -183,19 +183,28 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 # For local development (minikube/kind/Docker Desktop)
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/kind/deploy.yaml
 
+# Verify installations
+kubectl get pods -n kube-system
+kubectl get pods -n ingress-nginx
+kubectl top nodes  # Should work after metrics server is running
+kubectl top pods  # Should work after metrics server is running
 
-# Install the EBS CSI driver as an EKS Addon
+# To enable Persistent Storage
+
+# First install the EBS CSI driver as an EKS Addon
 
 -> In the EKS Console, open your cluster → go to Add-ons → click Get more add-ons → select Amazon EBS CSI driver → click Next.
 -> On the configuration page, Under Pod identity association, choose Create a new IAM role, and the console will auto-attach the AmazonEBSCSIDriverPolicy.
 -> Confirm and click Create. The add-on installs, the IAM role is associated with the SA via Pod Identity, and the driver starts running.
 -> Verify under Add-ons tab that the EBS CSI driver is active and under Pod identity associations tab you see the SA <-> IAM role mapping.
 
-# Verify installations
-kubectl get pods -n kube-system
-kubectl get pods -n ingress-nginx
-kubectl top nodes  # Should work after metrics server is running
-kubectl top npods  # Should work after metrics server is running
+# Install storage class for persistent volumes
+kubectl apply -f kubernetes/pre-req/storageclass-gp3.yaml
+
+# Verify storage class installation
+kubectl get storageclass
+
+
 ```
 
 
@@ -226,6 +235,7 @@ kubectl apply -f kubernetes/k8s-manifests/daemonsets-example/
 ```
 
 **Option B: Helm Charts**
+
 ```bash
 helm upgrade --install mongo kubernetes/helm/charts/mongo -n shopnow-demo --create-namespace
 helm upgrade --install backend kubernetes/helm/charts/backend -n shopnow-demo
@@ -255,7 +265,7 @@ kubectl get applications -n argocd
 ```bash
 
 # check the status of the mongo-0 pods 
-kubectl get pods -n shownow-demo
+kubectl get pods -n shopnow-demo
 
 # if mongo-0 pod is healthy, then run following command to create a user for the backend to connect
 # user credentials should be same as mentioned in the backend secrets-db.yaml file
@@ -276,7 +286,7 @@ db.createUser({
 exit
 
 # Restart backend deployment
- kubectl rollout restart deploy backend -n shopnow-demo
+kubectl rollout restart deploy backend -n shopnow-demo
 ```
 
 ### 3. Check the resources deployed

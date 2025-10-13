@@ -19,6 +19,12 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.8.1/deploy/static/provider/kind/deploy.yaml
 ```
 
+### 3. Storage Class (GP3)
+```bash
+kubectl apply -f storageclass-gp3.yaml
+```
+Provides high-performance GP3 storage class for persistent volumes.
+
 ## Verification Commands
 ```bash
 # Check metrics server
@@ -28,4 +34,6 @@ kubectl top pods -A
 # Check ingress controller
 kubectl get pods -n ingress-nginx
 
+# Check storage class
+kubectl get storageclass
 ```
