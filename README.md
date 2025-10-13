@@ -241,6 +241,10 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 
 # Deploy applications
 kubectl apply -f kubernetes/argocd/umbrella-application.yaml
+
+# Check all ArgoCD application status:
+kubectl get applications -n argocd
+
 ```
 
 ### 3. Create users in MongoDB after the mongodb pods are healthy
