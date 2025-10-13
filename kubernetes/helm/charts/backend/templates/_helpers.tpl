@@ -3,5 +3,5 @@
 {{- end -}}
 
 {{- define "backend.fullname" -}}
-{{ printf "%s-%s" .Release.Name (include "backend.name" .) | trunc 63 | trimSuffix "-" }}
+{{ .Release.Name | trunc 63 | trimSuffix "-" }}
 {{- end -}}

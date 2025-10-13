@@ -1,4 +1,4 @@
-replicaCount: 2
+replicaCount: 1
 
 image:
   repository: mongo
@@ -23,5 +23,29 @@ resources:
     memory: "1Gi"
 
 readinessProbe:
-  initialDelaySeconds: 10
+  initialDelaySeconds: 20
   periodSeconds: 10
+  timeoutSeconds: 5
+
+# Demo-only retention policy
+# When this StatefulSet is deleted, PVCs created from volumeClaimTemplates will be deleted.
+# When the StatefulSet is scaled down, PVCs for removed replicas will be deleted.
+persistentVolumeClaimRetentionPolicy:
+  whenDeleted: Delete
+  whenScaled: Delete
+
+terminationGracePeriodSeconds: 30
+
+# StorageClass configuration
+storageClass:
+  create: true
+  name: gp3-ssd
+  provisioner: ebs.csi.aws.com
+  volumeBindingMode: WaitForFirstConsumer
+  reclaimPolicy: Delete
+  allowVolumeExpansion: true
+  parameters:
+    type: gp3
+    fsType: ext4
+  labels: {}
+  annotations: {}

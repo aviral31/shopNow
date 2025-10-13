@@ -73,25 +73,82 @@ aws sts get-caller-identity
 
 # Create ECR repositories either via the aws cli as mentioned below or via console (Has to be done once to create the ECR repo, skip this step when you are rebuilding the docker images):
 
-aws ecr create-repository --repository-name <unique-registry-name>/<app-name> --region <region>
+like:
 
-e.g.:
-aws ecr create-repository --repository-name shopnow/frontend --region ap-southeast-1
-aws ecr create-repository --repository-name shopnow/backend --region ap-southeast-1
-aws ecr create-repository --repository-name shopnow/admin --region ap-southeast-1
+aws ecr create-repository --repository-name <your-username>-shopnow/frontend --region <region>
+aws ecr create-repository --repository-name <your-username>-shopnow/backend --region <region>
+aws ecr create-repository --repository-name <your-username>-shopnow/admin --region <region>
 
 # Get login token (run this command everytime as the docker credentials are persisted only on the terminal)
 aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
 ```
 
 
-#### 3. Update Registry Configuration
-**IMPORTANT**: Replace placeholder registry URLs with your actual ECR registry:
+#### 3. Update Configurations in below mentioned files
 
-**Files to update:**
-- All deployment manifests in `kubernetes/k8s-manifests/*/deployment.yaml` when working with raw Kubernetes manifest files
-- All Helm values files in `kubernetes/helm/charts/*/values.yaml` when working working with Helm charts
-- Update `REGISTRY = "<account-id>.dkr.ecr.<region>.amazonaws.com/shopnow"` in all the Jenkinsfile
+
+## 🔧 Personalization Required
+
+**For Multi-User Kubernetes Clusters**: To avoid conflicts when multiple learners use the same cluster, each user must personalize their deployment with unique identifiers.
+
+**IMPORTANT**: This project contains hardcoded references that you must update with your own values:
+
+3.1. Replace "aryan" with your username in these locations:
+
+  **Ingress Paths** (in both Kubernetes manifests and Helm charts):
+   - `kubernetes/k8s-manifests/ingress/ingress-shopnow.yaml`
+     - Change `/aryan` to `/<your-username>`
+     - Change `/aryan-admin` to `/<your-username>-admin`
+   
+   - `kubernetes/helm/charts/frontend/values.yaml`
+     - Change `path: /aryan` to `path: /<your-username>`
+   
+   - `kubernetes/helm/charts/admin/values.yaml`
+     - Change `path: /aryan-admin` to `path: /<your-username>-admin`
+
+
+  **Nginx ConfigMaps**
+   - All references with 'aryan' to <your-username> in following files:
+   - `kubernetes/k8s-manifests/frontend/cm-nginx.yaml`   
+   - `kubernetes/k8s-manifests/admin/cm-nginx.yaml`
+
+
+  **Helm Chart Nginx Configurations**:
+   - All references with 'aryan' in the 'nginx.config' section to <your-username> in following files:
+   - `kubernetes/helm/charts/frontend/values.yaml` 
+   - `kubernetes/helm/charts/admin/values.yaml`
+
+  **Dockerfiles** (Build Arguments):
+   - `frontend/Dockerfile`
+     - Change `ARG USER_NAME=aryan` to `ARG USER_NAME=<your-username>`
+   
+   - `admin/Dockerfile`
+     - Change `ARG USER_NAME=aryan` to `ARG USER_NAME=<your-username>`
+
+  **Build Script** (optional):
+   - `scripts/build-and-push.sh`
+     - Update the example usage comments that reference "aryan"
+
+3.2. **ECR Repository Names** - Update to your username:
+   - All `kubernetes/k8s-manifests/*/deployment.yaml` files
+   - All `kubernetes/helm/charts/*/values.yaml` files
+   - All `jenkins\Jenkinsfile.*.*` files
+   - Change `shopnow/frontend` to `<your-username>-shopnow/frontend`
+   - Change `shopnow/backend` to `<your-username>-shopnow/backend`
+   - Change `shopnow/admin` to `<your-username>-shopnow/admin`
+
+3.3. **Update Namespace** on these locations:
+  - `kubernetes/k8s-manifests/namespace/namespace.yaml` - Change namespace name
+  - All files in `kubernetes/k8s-manifests/*/` - Update namespace references
+  - `kubernetes/argocd/apps/*.yaml` - Update destination namespace
+  - All kubectl commands in this README - Replace `shopnow-demo` with your namespace
+
+3.4. **Update ArgoCD Repository URL**:
+  - In `kubernetes/argocd/umbrella-application.yaml` and all `kubernetes/argocd/apps/*.yaml` files:
+  - Change `repoURL: 'https://github.com/aryanm12/shopNow'` 
+  - To `repoURL: 'https://github.com/<your-github-username>/<your-repo-name>'`
+
+
 
 #### 4. Kubernetes Cluster Access (Make sure to have a running Kubernetes cluster, here is an example to connect with EKS)
 ```bash
@@ -147,7 +204,12 @@ kubectl top npods  # Should work after metrics server is running
 ### 1. Build the docker images and push it to the ECR registry created above
 
 ```bash
-scripts/build-and-push.sh <account-id>.dkr.ecr.us-east-1.amazonaws.com/shopnow <tag-name-number>
+scripts/build-and-push.sh <account-id>.dkr.ecr.<region>.amazonaws.com/<registry-name> <tag-name-number> <your-username> 
+
+# Example for user 'aryan' with tag 'latest' and ECR registry '975050024946.dkr.ecr.ap-southeast-1.amazonaws.com/shopnow':
+./scripts/build-and-push.sh 975050024946.dkr.ecr.ap-southeast-1.amazonaws.com/shopnow latest aryan
+
+
 ```
 
 ### 2. Choose Your Deployment Method
@@ -165,10 +227,10 @@ kubectl apply -f kubernetes/k8s-manifests/daemonsets-example/
 
 **Option B: Helm Charts**
 ```bash
-helm install mongo kubernetes/helm/charts/mongo -n shopnow-demo --create-namespace
-helm install backend kubernetes/helm/charts/backend -n shopnow-demo
-helm install frontend kubernetes/helm/charts/frontend -n shopnow-demo
-helm install admin kubernetes/helm/charts/admin -n shopnow-demo
+helm upgrade --install mongo kubernetes/helm/charts/mongo -n shopnow-demo --create-namespace
+helm upgrade --install backend kubernetes/helm/charts/backend -n shopnow-demo
+helm upgrade --install frontend kubernetes/helm/charts/frontend -n shopnow-demo
+helm upgrade --install admin kubernetes/helm/charts/admin -n shopnow-demo
 ```
 
 **Option C: ArgoCD GitOps**
@@ -204,6 +266,10 @@ db.createUser({
   ]
 });
 
+exit
+
+# Restart backend deployment
+ kubectl rollout restart deploy backend -n shopnow-demo
 ```
 
 ### 3. Check the resources deployed
@@ -251,8 +317,8 @@ kubectl logs backend-746cc99cd-cqrgf -n shopnow-demo --previous # If no details 
 
 ## 🌐 Access the Apps
 
-* **Customer App** → [http://<load-balancer-ip-or-dns>/](http://<load-balancer-ip-or-dns>/)
-* **Admin Dashboard** → [http://<load-balancer-ip-or-dns>/admin/](http://<load-balancer-ip-or-dns>/admin/)
+* **Customer App** → [http://<load-balancer-ip-or-dns>/<your-username>](http://<load-balancer-ip-or-dns>/<your-username>)
+* **Admin Dashboard** → [http://<load-balancer-ip-or-dns>/<your-username>-admin](http://<load-balancer-ip-or-dns>/<your-username>-admin)
 
 ---
 

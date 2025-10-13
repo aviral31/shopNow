@@ -10,21 +10,8 @@ data:
       server_name _;
       root /usr/share/nginx/html;
       index index.html;
-      
-      # Serve admin app from /aryan-admin path (built with PUBLIC_URL=/aryan-admin)
-      location /aryan-admin {
-        alias /usr/share/nginx/html;
-        try_files $uri $uri/ /aryan-admin/index.html;
-      }
-      
-      # Handle static assets within /aryan-admin
-      location ~* /aryan-admin/.*\.(css|js|map|svg|gif|png|jpg|jpeg|ico|woff2?|ttf|eot)$ {
-          expires 30d;
-          add_header Cache-Control "public, immutable";
-          try_files $uri =404;
-      }
-      
-      # Admin API - proxy to backend
+
+      # Admin API - proxy to backend for aryan-admin (general catch-all)
       location /aryan-admin/api/ {
         proxy_pass http://backend:5000/api/;
         proxy_set_header Host $host;
@@ -34,17 +21,33 @@ data:
         proxy_read_timeout 90;
       }
       
+      # Handle static assets within /aryan-admin/static/ - map to /static/
+      location /aryan-admin/static/ {
+        alias /usr/share/nginx/html/static/;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+      }
+      
+      # Handle other static assets (favicon, etc.) within /aryan-admin/
+      location ~ ^/aryan-admin/(.*\.(css|js|map|svg|gif|png|jpg|jpeg|ico|woff2?|ttf|eot))$ {
+        alias /usr/share/nginx/html/$1;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+      }
+      
+      # Handle /aryan-admin path - serve the React app
+      # This catches all paths and serves index.html for SPA routing
+      location / {
+        try_files $uri $uri/ /index.html;
+      }
+      
       # Health check
       location = /health {
         return 200 'OK';
         add_header Content-Type text/plain;
       }
       
-      # Redirect root to admin
-      location = / {
-        return 301 /aryan-admin/;
-      }
-      
+      # Security headers
       add_header X-Content-Type-Options nosniff;
       add_header X-Frame-Options DENY;
     }

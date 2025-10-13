@@ -12,7 +12,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   // API base URL - replace with your backend URL
-  const API_BASE_URL = '/api';
+  // API base URL - from environment variable with fallback
+  const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'api';
 
   // Fetch orders from backend
   const fetchOrders = async () => {
@@ -155,8 +156,8 @@ const AdminDashboard = () => {
       // Fallback for demo
       setOrders(prevOrders =>
         prevOrders.map(order =>
-          order.token === token 
-            ? { ...order, status: 'collected', paymentStatus: 'paid' } 
+          order.token === token
+            ? { ...order, status: 'collected', paymentStatus: 'paid' }
             : order
         )
       );
@@ -431,7 +432,7 @@ const AdminDashboard = () => {
               </tbody>
             </table>
           </div>
-          
+
           {filteredOrders.length === 0 && (
             <div className="text-center py-12">
               <Package className="h-12 w-12 text-gray-400 mx-auto mb-4" />
@@ -453,7 +454,7 @@ const AdminDashboard = () => {
                   <XCircle className="h-6 w-6" />
                 </button>
               </div>
-              
+
               <div className="p-6 space-y-6">
                 {/* Order Info */}
                 <div>

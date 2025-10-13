@@ -1,14 +1,13 @@
 replicaCount: 1
 
 image:
-  repository: <account-id>.dkr.ecr.<region>.amazonaws.com/shopnow/backend
+  repository: 975050024946.dkr.ecr.ap-southeast-1.amazonaws.com/shopnow/backend
   tag: latest
   pullPolicy: IfNotPresent
 
 service:
   type: ClusterIP
   port: 5000
-  nodePort: 30500
 
 config:
   MONGODB_HOST: mongo
@@ -17,9 +16,7 @@ config:
 
 secret:
   enabled: true
-  mongodb:
-    user: shopuser
-    password: ShopNowPass123
+  MONGODB_URI: mongodb://shopuser:ShopNowPass123@mongo-0.mongo-headless.shopnow-demo.svc.cluster.local:27017/shopnow?authSource=admin
 
 resources:
   requests:
@@ -30,7 +27,7 @@ resources:
     memory: "512Mi"
 
 hpa:
-  enabled: false
+  enabled: true
   minReplicas: 1
-  maxReplicas: 5
-  targetCPUUtilizationPercentage: 60
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80

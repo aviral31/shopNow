@@ -34,16 +34,16 @@ helm version
 ### Deploy Individual Charts
 ```bash
 # Deploy in dependency order
-helm install mongo charts/mongo -n shopnow-demo --create-namespace
-helm install backend charts/backend -n shopnow-demo
-helm install frontend charts/frontend -n shopnow-demo
-helm install admin charts/admin -n shopnow-demo
+helm upgrade --install --install mongo charts/mongo -n shopnow-demo --create-namespace
+helm upgrade --install --install backend charts/backend -n shopnow-demo
+helm upgrade --install --install frontend charts/frontend -n shopnow-demo
+helm upgrade --install --install admin charts/admin -n shopnow-demo
 ```
 
 ### Deploy with Custom Values
 ```bash
 # Override default values
-helm install backend charts/backend -n shopnow-demo \
+helm upgrade --install --install backend charts/backend -n shopnow-demo \
   --set replicaCount=3 \
   --set image.tag=v1.2.0 \
   --set resources.requests.cpu=200m
@@ -52,13 +52,13 @@ helm install backend charts/backend -n shopnow-demo \
 ### Environment-Specific Deployments
 ```bash
 # Development
-helm install backend charts/backend -f values-dev.yaml
+helm upgrade --install --install backend charts/backend -f values-dev.yaml
 
 # Staging
-helm install backend charts/backend -f values-staging.yaml
+helm upgrade --install --install backend charts/backend -f values-staging.yaml
 
 # Production
-helm install backend charts/backend -f values-prod.yaml
+helm upgrade --install --install backend charts/backend -f values-prod.yaml
 ```
 
 ## 🔄 Chart Management
@@ -66,12 +66,12 @@ helm install backend charts/backend -f values-prod.yaml
 ### Upgrade Deployments
 ```bash
 # Upgrade with new image
-helm upgrade backend charts/backend \
+helm upgrade --install backend charts/backend \
   --set image.tag=v1.3.0 \
   --namespace shopnow-demo
 
 # Upgrade with new values file
-helm upgrade backend charts/backend \
+helm upgrade --install backend charts/backend \
   -f new-values.yaml \
   --namespace shopnow-demo
 ```

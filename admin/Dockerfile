@@ -11,8 +11,10 @@ COPY package*.json ./
 RUN npm ci --no-audit --prefer-offline
 
 COPY . .
-# Update with <yourname>-admin
-ENV PUBLIC_URL=/aryan-admin
+# Build argument for dynamic user path
+ARG USER_NAME=aryan
+ENV PUBLIC_URL=/${USER_NAME}-admin
+ENV REACT_APP_API_BASE_URL=/${USER_NAME}-admin/api
 RUN npm run build
 
 ############################

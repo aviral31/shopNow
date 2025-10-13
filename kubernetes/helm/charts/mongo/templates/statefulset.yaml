@@ -8,12 +8,18 @@ spec:
   selector:
     matchLabels:
       app: {{ include "mongo.fullname" . }}
+  # Demo-only retention policy
+  # When this StatefulSet is deleted, PVCs created from volumeClaimTemplates will be deleted.
+  # When the StatefulSet is scaled down, PVCs for removed replicas will be deleted.
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: {{ .Values.persistentVolumeClaimRetentionPolicy.whenDeleted }}
+    whenScaled: {{ .Values.persistentVolumeClaimRetentionPolicy.whenScaled }}
   template:
     metadata:
       labels:
         app: {{ include "mongo.fullname" . }}
     spec:
-      terminationGracePeriodSeconds: 30
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       containers:
         - name: mongo
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
@@ -26,10 +32,11 @@ spec:
           readinessProbe:
             exec:
               command:
-                - mongo
+                - mongosh
                 - --eval
                 - "db.adminCommand('ping')"
             initialDelaySeconds: {{ .Values.readinessProbe.initialDelaySeconds }}
+            timeoutSeconds: {{ .Values.readinessProbe.timeoutSeconds }}
             periodSeconds: {{ .Values.readinessProbe.periodSeconds }}
   volumeClaimTemplates:
     - metadata:
