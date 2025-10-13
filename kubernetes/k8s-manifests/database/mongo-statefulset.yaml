@@ -7,10 +7,17 @@ metadata:
     app: mongo
 spec:
   serviceName: mongo-headless
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: mongo
+  # <<< Demo-only retention policy >>> 
+  # When this StatefulSet is deleted, PVCs created from volumeClaimTemplates will be deleted.
+  # When the StatefulSet is scaled down, PVCs for removed replicas will be deleted.
+  # This is important in demo env as they will delete the EBS volumes from the AWS account as well
+  persistentVolumeClaimRetentionPolicy:
+    whenDeleted: Delete
+    whenScaled: Delete
   template:
     metadata:
       labels:

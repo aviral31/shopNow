@@ -11,7 +11,8 @@ COPY package*.json ./
 RUN npm ci --no-audit --prefer-offline
 
 COPY . .
-ENV PUBLIC_URL=/admin
+# Update with <yourname>-admin
+ENV PUBLIC_URL=/aryan-admin
 RUN npm run build
 
 ############################

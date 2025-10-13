@@ -15,6 +15,9 @@ RUN npm ci --no-audit --prefer-offline
 
 # Copy source and build
 COPY . .
+
+# Update with your name
+ENV PUBLIC_URL=/aryan
 RUN npm run build
 
 ############################

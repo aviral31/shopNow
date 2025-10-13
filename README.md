@@ -68,7 +68,10 @@ export AWS_ACCESS_KEY_ID=your-access-key
 export AWS_SECRET_ACCESS_KEY=your-secret-key
 export AWS_DEFAULT_REGION=us-east-1
 
-# Create ECR repositories either via the aws cli as mentioned below or via console:
+# If above credentials are already set, run below command to verify
+aws sts get-caller-identity
+
+# Create ECR repositories either via the aws cli as mentioned below or via console (Has to be done once to create the ECR repo, skip this step when you are rebuilding the docker images):
 
 aws ecr create-repository --repository-name <unique-registry-name>/<app-name> --region <region>
 
@@ -77,7 +80,7 @@ aws ecr create-repository --repository-name shopnow/frontend --region ap-southea
 aws ecr create-repository --repository-name shopnow/backend --region ap-southeast-1
 aws ecr create-repository --repository-name shopnow/admin --region ap-southeast-1
 
-# Get login token
+# Get login token (run this command everytime as the docker credentials are persisted only on the terminal)
 aws ecr get-login-password --region <region> | docker login --username AWS --password-stdin <account-id>.dkr.ecr.<region>.amazonaws.com
 ```
 
@@ -100,6 +103,8 @@ kubectl cluster-info
 kubectl get nodes
 ```
 
+Note: All the below mentioned kubectl commands assume that you are working with "shopnow-demo" namespace, update the namespace as per yours where ever you find "shopnow-demo".
+
 #### 5. Docker Registry Secret (Only required for private ECR registry)
 **Note**: Skip this step if using public Docker Hub images or public ECR repositories.
 
@@ -109,10 +114,7 @@ kubectl create ns shopnow-demo
 kubectl create secret docker-registry ecr-secret --docker-server=<account-id>.dkr.ecr.us-east-1.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region us-east-1) --namespace=shopnow-demo
 ```
 
-kubectl create ns shopnow-demo
-kubectl create secret docker-registry ecr-secret --docker-server=975050024946.dkr.ecr.ap-southeast-1.amazonaws.com --docker-username=AWS --docker-password=$(aws ecr get-login-password --region us-east-1) --namespace=shopnow-demo
-
-#### 6. Install Pre-requisites in the Kubernetes Environment
+#### 6. Install Pre-requisites in the Kubernetes Environment (Has to be done once per Kubernetes Cluster)
 ```bash
 # Install metrics server (required for resource monitoring and HPA)
 kubectl apply -f kubernetes/pre-req/metrics-server.yaml
@@ -130,7 +132,7 @@ kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/cont
 -> In the EKS Console, open your cluster → go to Add-ons → click Get more add-ons → select Amazon EBS CSI driver → click Next.
 -> On the configuration page, Under Pod identity association, choose Create a new IAM role, and the console will auto-attach the AmazonEBSCSIDriverPolicy.
 -> Confirm and click Create. The add-on installs, the IAM role is associated with the SA via Pod Identity, and the driver starts running.
--> Verify under Add-ons tab that the EBS CSI driver is active and under Pod identity associations tab you see the SA ↔ IAM role mapping.
+-> Verify under Add-ons tab that the EBS CSI driver is active and under Pod identity associations tab you see the SA <-> IAM role mapping.
 
 # Verify installations
 kubectl get pods -n kube-system

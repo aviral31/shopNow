@@ -11,21 +11,21 @@ data:
       root /usr/share/nginx/html;
       index index.html;
       
-      # Serve admin app from /admin path (built with PUBLIC_URL=/admin)
-      location /admin {
+      # Serve admin app from /aryan-admin path (built with PUBLIC_URL=/aryan-admin)
+      location /aryan-admin {
         alias /usr/share/nginx/html;
-        try_files $uri $uri/ /admin/index.html;
-        
-        # Handle static assets within /admin
-        location ~* /admin/.*\.(css|js|map|svg|gif|png|jpg|jpeg|ico|woff2?|ttf|eot)$ {
+        try_files $uri $uri/ /aryan-admin/index.html;
+      }
+      
+      # Handle static assets within /aryan-admin
+      location ~* /aryan-admin/.*\.(css|js|map|svg|gif|png|jpg|jpeg|ico|woff2?|ttf|eot)$ {
           expires 30d;
           add_header Cache-Control "public, immutable";
           try_files $uri =404;
-        }
       }
       
       # Admin API - proxy to backend
-      location /admin/api/ {
+      location /aryan-admin/api/ {
         proxy_pass http://backend:5000/api/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -42,7 +42,7 @@ data:
       
       # Redirect root to admin
       location = / {
-        return 301 /admin/;
+        return 301 /aryan-admin/;
       }
       
       add_header X-Content-Type-Options nosniff;
