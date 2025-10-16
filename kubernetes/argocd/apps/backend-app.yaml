@@ -8,7 +8,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/aryanm12/shopNow'
+    repoURL: 'https://github.com/aviral31/shopNow'
     targetRevision: HEAD
     path: kubernetes/helm/charts/backend
     helm:
@@ -16,7 +16,7 @@ spec:
       releaseName: backend
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: shopnow-demo
+    namespace: aviral-k8
   syncPolicy:
     automated:
       prune: true

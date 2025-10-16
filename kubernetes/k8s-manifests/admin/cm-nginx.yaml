@@ -2,7 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: admin-nginx-conf
-  namespace: shopnow-demo
+  namespace: aviral-k8
 data:
   default.conf: |
     server {
@@ -11,8 +11,8 @@ data:
       root /usr/share/nginx/html;
       index index.html;
 
-      # Admin API - proxy to backend for aryan-admin (general catch-all)
-      location /aryan-admin/api/ {
+      # Admin API - proxy to backend for aviral-admin (general catch-all)
+      location /aviral-admin/api/ {
         proxy_pass http://backend:5000/api/;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -21,8 +21,8 @@ data:
         proxy_read_timeout 90;
       }
       
-      # Handle static assets within /aryan-admin/static/ - map to /static/
-      location /aryan-admin/static/ {
+      # Handle static assets within /aviral-admin/static/ - map to /static/
+      location /aviral-admin/static/ {
         alias /usr/share/nginx/html/static/;
         expires 30d;
         add_header Cache-Control "public, immutable";

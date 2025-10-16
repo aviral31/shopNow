@@ -2,7 +2,7 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: backend-hpa
-  namespace: shopnow-demo
+  namespace: aviral-k8
 spec:
   scaleTargetRef:
     apiVersion: apps/v1

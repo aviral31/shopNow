@@ -6,12 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: 'https://github.com/aryanm12/shopNow'
+    repoURL: 'https://github.com/aviral31/shopNow'
     targetRevision: HEAD
     path: kubernetes/argocd/apps
   destination:
     server: 'https://kubernetes.default.svc'
-    namespace: argocd
+    namespace: aviral-k8
   syncPolicy:
     automated:
       prune: false

@@ -1,7 +1,7 @@
 pipeline {
   agent any
   environment {
-    REGISTRY = "your.registry.example.com/shopnow"
+    REGISTRY = "975050024946.dkr.ecr.ca-central-1.amazonaws.com/shopnow-aviral/backend:latest"
     DOCKER_CREDENTIALS = 'docker-reg-cred'
     IMAGE_TAG = ''
   }
