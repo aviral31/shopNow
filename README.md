@@ -347,7 +347,8 @@ kubectl logs backend-746cc99cd-cqrgf -n shopnow-demo --previous # If no details 
 
 ## 👨‍💻 Author
 
-## K Mohan Krishna
+## Aviral Paliwal (forked from aryanm12/shopNow)
 
 ---
+
 
