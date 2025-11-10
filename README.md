@@ -334,11 +334,11 @@ kubectl logs backend-746cc99cd-cqrgf -n shopnow-demo --previous # If no details 
 
 ## Screenshots
 
-[!](Screenshots/awsconfigure.png)
-[!](Screenshots/clusterinfo.png)
-[!](Screenshots/nsanddockersecret.png)
-[!](Screenshots/podsinfo.png)
-[!](Screenshots/serviceinfo.png)
+![AWS Configure](Screenshots/awsconfigure.png)
+![Cluster Info](Screenshots/clusterinfo.png)
+![Namespace and Secret](Screenshots/nsanddockersecret.png)
+![Pods Info](Screenshots/podsinfo.png)
+![Service and Ingress Info](Screenshots/serviceinfo.png)
 
 ---
 
