@@ -332,10 +332,12 @@ kubectl logs backend-746cc99cd-cqrgf -n shopnow-demo --previous # If no details 
 
 ---
 
-## 🌐 Access the Apps
-
-* **Customer App** → [http://<load-balancer-ip-or-dns>/<your-username>](http://<load-balancer-ip-or-dns>/<your-username>)
-* **Admin Dashboard** → [http://<load-balancer-ip-or-dns>/<your-username>-admin](http://<load-balancer-ip-or-dns>/<your-username>-admin)
+## Screenshots
+[!AWS Configure](Screenshots/awsconfigure.png)
+[!Cluster Info](Screenshots/clusterinfo.png)
+[!Namespace and Secret creation](Screenshots/nsanddockersecret.png)
+[!Pods Info](Screenshots/podsinfo.png)
+[!Service and Ingress Info](Screenshots/serviceinfo.png)
 
 ---
 
@@ -350,5 +352,6 @@ kubectl logs backend-746cc99cd-cqrgf -n shopnow-demo --previous # If no details 
 ## Aviral Paliwal (forked from aryanm12/shopNow)
 
 ---
+
 
 
